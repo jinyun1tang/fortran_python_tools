@@ -2,6 +2,8 @@
 import numpy as np
 import argparse
 import sys
+from shutil import copyfile
+
 #
 # globals
 
@@ -13,11 +15,11 @@ def newIF(label):
 
     return label+10
 
-def is_a_newif(line):
+def found_then(line):
     tline=line.upper()
     return (tline.find('THEN')>=6)
 
-def is_endif(line):
+def found_endif(line):
     tline=line.upper()
     return (tline.find('ENDIF')>=6)
 
@@ -31,26 +33,37 @@ args = parser.parse_args()
 
 f77f=args.fold[0]
 
+copyfile(f77f, f77f+".bak")
+
 f77lb=f77f+'.lbif'
 
-labels=np.zeros((10),dtype=np.int16)
+labels=np.zeros((30),dtype=np.int16)
 curpos=0
 
 flbl=open(f77f+".lbif","w")
+lelif=False
 with open(f77f,"r") as foldf:
     line = foldf.readline()
     while line:
         tline=line.rstrip()
-        if is_a_newif(tline):
-            if curpos==0:
-                labels[0]=100
+        #do nothing to comment lines
+        if not is_comment(line):
+            if tline[6:12].upper()=="ELSEIF":
+                lelif=not found_then(tline)
             else:
-                labels[curpos]=newIF(labels[curpos-1])
-            tline=tline+" :IL"+str(labels[curpos])
-            curpos=curpos+1
-        elif is_endif(tline):
-            tline=tline+" :IL"+str(labels[curpos-1])
-            curpos=curpos-1
+                if found_then(tline):
+                    if not lelif:
+                        if curpos==0:
+                            labels[0]=100
+                        else:
+                            labels[curpos]=newIF(labels[curpos-1])
+                        tline=tline+" :IL"+str(labels[curpos])+"b"
+                        curpos=curpos+1
+                    lelif=False
+                elif found_endif(tline):
+                    tline=tline+" :IL"+str(labels[curpos-1])+"e"
+                    curpos=curpos-1
+
         flbl.write(tline+'\n')
         line = foldf.readline()
 

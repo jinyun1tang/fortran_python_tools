@@ -15,6 +15,13 @@ C
       else
       endif
 
+      if a then
+      elseif b
+     2then
+      elseif c then
+      ELSEIF(IDAY(7,NB,NZ,NY,NX).EQ.0)THEN
+
+      endif
       endif
       endif
       end program main
