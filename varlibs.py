@@ -924,13 +924,46 @@ def var_break(line):
         """
         regular expression
         """
-        vsl_lhs,vsl=break_exprl(line)
+        jeq=0
+        for c in line:
+            if c=='=':
+                jeq=jeq+1
+                if jeq>=2:
+                    break
+        if jeq >= 2:
+            #this part handel juxtaposition of parameter declarations in the
+            #form as: real, parameter :: a=9., c=a*3.0
+            x=line.split('=')
+            vsl=[]
+            for s in x:
+#                print(s)
+                vsl_lhs1,vsl1=break_exprl(s)
+#                print(vsl1)
+                for c in vsl1:
+                    if ',' in c and '(' not in c:
+                        #',' is in array
+                        xx=c.split(',')
+                        for c1 in xx:
+                            if not is_digit(c1):
+                                if c1 not in vsl  and c1 !=':':
+                                    vsl.append(c1)
+                    else:
+                        if c not in vsl and c !=':':
+                            vsl.append(c)
+
+        else:
+            vsl_lhs,vsl=break_exprl(line)
 #        print(vsl_lhs)
 #        print(vsl)
     for s in vsl:
         if is_digit(s) or "'" in s:
             vsl.remove(s)
 
+    nl = len(vsl)
+    for jj in range(nl):
+        vsl[jj]=vsl[jj].strip()
+    if vsl_lhs:
+        vsl_lhs=vsl_lhs.strip()
     return vsl_lhs,vsl
 
 

@@ -11,8 +11,9 @@ def load_header(headf,real_list,int_list,char_list,bool_list):
     with open(headf,"r") as foldf:
         line = 'x'
         line0= ''
-        while (line):
+        while line:
             line = foldf.readline()
+
             if "COMMON" in line:
                 line1=vl.rm_arr_indexl(line0)
                 lines.append(line1)
@@ -33,27 +34,31 @@ def load_header(headf,real_list,int_list,char_list,bool_list):
 #                    start=False
                 line0=line.rstrip()
 #    print(len(lines))
+    if not lines:
+        lines.append(line0)
     for line in lines:
 #        print(line)
-        head,stem=vl.hline_break(line)
+        head,stem=vl.hline_break(line.upper())
+#        print('head: '+head)
+#        print(stem)
         slist=vl.stem_break(stem.strip())
         nl=len(slist)
-        if 'CHARACTER' in head.upper():
+        if 'CHARACTER' in head:
             for jl in range(nl):
                 loc=ord(slist[jl][0].upper())-ord('A')
                 char_list[loc].append(slist[jl])
 #                vl.add_varlist(char_list,slist)
-        elif 'REAL' in head.upper():
+        elif 'REAL' in head:
             for jl in range(nl):
                 loc=ord(slist[jl][0].upper())-ord('A')
                 real_list[loc].append(slist[jl])
 #            vl.add_varlist(real_list,stem)
-        elif 'LOGICAL' in head.upper():
+        elif 'LOGICAL' in head:
             for jl in range(nl):
                 loc=ord(slist[jl][0].upper())-ord('A')
                 bool_list[loc].append(slist[jl])
 #            vl.add_varlist(bool_list,stem)
-        elif 'INTEGER' in head.upper():
+        elif 'INTEGER' in head:
             for jl in range(nl):
                 loc=ord(slist[jl][0].upper())-ord('A')
                 int_list[loc].append(slist[jl])

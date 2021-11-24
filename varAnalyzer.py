@@ -10,20 +10,25 @@ Currently, the analyzer does not work well with logical and character variables,
 which may be regarded as either integers or real variables.
 """
 
-def write_var(wfile,varlist):
+def write_var(wfile,varlist,prefix=''):
     """
     write list varlist to wfile
     """
     kk=0
     if varlist:
+        s=prefix
         for c in varlist:
-            kk=kk+1
-            if kk%10:
-                wfile.write(c+',')
-            else:
-                wfile.write(c)
+            s=s+c
+            if len(s)>62:
+                wfile.write(s)
                 wfile.write('\n')
-        if kk:
+                s=prefix
+            else:
+                s=s+','
+        if s and len(s) > len(prefix):
+            if s[-1]==',':
+                s=s[:-1]
+            wfile.write(s)
             wfile.write('\n')
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -169,13 +174,19 @@ with open(f77f,"r") as foldf:
                 start=3
                 if '::' in line0:
                     line00=line0.upper()
-                    line1=vl.rm_arr_indexl(line00)
+                    if not 'PARAMETER' in line00:
+                        line1=vl.rm_arr_indexl(line00)
+                    else:
+                        line1=line00
                     list_locdecl.append(line1)
                 for line1 in list_locdecl:
                     if not '::' in line1:
                         continue
                     head,stem=vl.hline_break(line1)
-                    slist=vl.stem_break(stem)
+                    if 'PARAMETER' in line1:
+                        var_lhs1,slist=vl.var_break(stem)
+                    else:
+                        slist=vl.stem_break(stem)
                     nl=len(slist)
                     if 'CHARACTER' in head:
                         for jl in range(nl):
@@ -229,8 +240,10 @@ with open(f77f,"r") as foldf:
                     label,line1=vl.rm_label(line00)
 #            if len(label.strip())>0:
 #                print(label)
+
                     if not vl.is_special(line1):
                         var_lhs,varlist=vl.var_break(line1)
+
                         if var_lhs:
                             if not var_lhs in var_lhst:
                                 var_lhst.append(var_lhs)
@@ -251,6 +264,7 @@ with open(f77f,"r") as foldf:
 """
 Identify variables that have not been declared
 """
+
 real_undecl=[]
 int_undecl=[]
 for jj in range(26):
@@ -262,6 +276,7 @@ for jj in range(26):
             and ss not in char_list_head[jj] \
             and ss not in char_list_loc_decl[jj]:
             real_undecl.append(ss)
+
     for ss in int_list_loc_use[jj]:
         if ss not in int_list_loc_decl[jj] \
             and ss not in int_list_head[jj] \
@@ -280,11 +295,11 @@ with open(frpt,"w") as frptf:
     frptf.write('-'*90+'\n')
     frptf.write('REAL:\n')
     frptf.write('-'*90+'\n')
-    write_var(frptf,real_undecl)
+    write_var(frptf,real_undecl,'      real(r8) :: ')
     frptf.write('-'*90+'\n')
     frptf.write('INTEGER:\n')
     frptf.write('-'*90+'\n')
-    write_var(frptf,int_undecl)
+    write_var(frptf,int_undecl,'      integer :: ')
     frptf.write('='*90+'\n')
     frptf.write('Value changing variables\n')
     write_var(frptf,var_lhst)
