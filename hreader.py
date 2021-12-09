@@ -6,7 +6,6 @@ def load_header(headf,real_list,int_list,char_list,bool_list):
     """load header file
     """
     lines=[]
-    print(headf)
     start=True
     with open(headf,"r") as foldf:
         line = 'x'
@@ -15,53 +14,55 @@ def load_header(headf,real_list,int_list,char_list,bool_list):
             line = foldf.readline()
 
             if "COMMON" in line:
-                line1=vl.rm_arr_indexl(line0)
-                lines.append(line1)
+#                line1=vl.rm_arr_indexl(line0)
+                lines.append(line0)
                 break
             if len(line.strip())==0 or vl.is_comment(line):
                 continue
             if vl.is_continue(line):
-                line0=line0+line[6:].strip()
+                line0=line0+line[6:].strip().upper()
             else:
                 #new  line
                 if line0:
-                    line1=vl.rm_arr_indexl(line0)
+#                    line1=vl.rm_arr_indexl(line0)
 #                    print('line1')
 #                    print(line1)
 #                    print('line')
 #                    print(line)
-                    lines.append(line1)
+                    lines.append(line0)
 #                    start=False
-                line0=line.rstrip()
+                line0=line.rstrip().upper()
 #    print(len(lines))
     if not lines:
         lines.append(line0)
     for line in lines:
 #        print(line)
-        head,stem=vl.hline_break(line.upper())
-#        print('head: '+head)
-#        print(stem)
-        slist=vl.stem_break(stem.strip())
+        head,stem=vl.hline_break(line)
+        slist=vl.decal_break(stem.strip())
         nl=len(slist)
         if 'CHARACTER' in head:
             for jl in range(nl):
                 loc=ord(slist[jl][0].upper())-ord('A')
-                char_list[loc].append(slist[jl])
+                if slist[jl] not in char_list[loc]:
+                    char_list[loc].append(slist[jl])
 #                vl.add_varlist(char_list,slist)
         elif 'REAL' in head:
             for jl in range(nl):
                 loc=ord(slist[jl][0].upper())-ord('A')
-                real_list[loc].append(slist[jl])
+                if slist[jl] not in real_list[loc]:
+                    real_list[loc].append(slist[jl])
 #            vl.add_varlist(real_list,stem)
         elif 'LOGICAL' in head:
             for jl in range(nl):
                 loc=ord(slist[jl][0].upper())-ord('A')
-                bool_list[loc].append(slist[jl])
+                if slist[jl] not in bool_list[loc]:
+                    bool_list[loc].append(slist[jl])
 #            vl.add_varlist(bool_list,stem)
         elif 'INTEGER' in head:
             for jl in range(nl):
                 loc=ord(slist[jl][0].upper())-ord('A')
-                int_list[loc].append(slist[jl])
+                if slist[jl] not in int_list[loc]:
+                    int_list[loc].append(slist[jl])
 #            vl.add_varlist(int_list,stem)
     return real_list,int_list,char_list,bool_list
 

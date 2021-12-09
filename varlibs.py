@@ -33,55 +33,62 @@ def is_continue(tline):
     return  ord(tline[5])>ord(' ')
 
 def is_special(tline):
-    if 'FORMAT' in tline:
+
+    if 'CALL ' in tline[0:5]:
+        return True
+    if 'CHARACTER' in tline:
+        return True        
+    if 'CONTAINS' in tline:
         return True
     if 'CONTINUE' in tline:
         return True
+    if 'DATA' in tline[0:4]:
+        return True
+    if 'DIMENSION' in tline:
+        return True        
     if 'ENDIF' in tline:
         return True
-    if 'END' in tline:
+    if 'END ' in tline[0:5]:
         return True
     if 'ELSE' in tline and not 'ELSEIF' in tline:
         return True
-    if 'SUBROUTINE' in tline:
+    if 'FORMAT' in tline:
         return True
     if 'FUNCTION' in tline:
         return True
-    if 'REAL*' in tline:
-        return True
+    if 'GO TO' == tline[0:5]:
+        return True        
+    if 'LOGICAL' in tline:
+        return True        
+    if 'include' in tline:
+        return True        
     if 'INTEGER' in tline:
-        return True
-    if 'RETURN' in tline:
-        return True
-    if 'CHARACTER' in tline:
         return True
     if 'PARAMETER' in tline:
         return True
-    if 'include' in tline:
+    if 'PAUSE' in tline:
+        return True
+    if 'PRIVATE' == tline[0:7]:
+        return True            
+    if 'PRINT' in tline:
         return True
     if 'PROGRAM' in tline:
         return True
-    if 'DIMENSION' in tline:
-        return True
-    if 'CALL ' in tline:
-        return True
-    if 'CONTAINS' in tline:
-        return True
-    if 'PAUSE' in tline:
-        return True
-    if 'STOP' in tline:
-        return True
+    if 'PUBLIC' == tline[0:6]:
+        return True            
     if 'READ' in tline:
         return True
-    if 'PRINT' in tline:
+    if 'REAL*' in tline:
+        return True        
+    if 'RETURN' in tline:
+        return True        
+    if 'STOP' in tline:
         return True
+    if 'SUBROUTINE' in tline:
+        return True        
     if 'WRITE' in tline:
         return True
-    if 'LOGICAL' in tline:
-        return True
     if '::' in tline:
-        return True
-    if 'GO TO' == tline[0:5]:
         return True
 
 def is_ifthenstruct(tline):
@@ -197,9 +204,14 @@ def rm_arr_indexl(line):
 
 
 def hline_break(line):
-    x=line.split('::')
-    head=x[0].strip()
-    stem=x[1].strip()
+    nl=len(line)
+#    head=''
+#    stem=''
+    for jj in range(nl):
+        if line[jj:jj+2]=='::':
+            head=line[0:jj]
+            stem=line[jj+2:]
+            break
     return head,stem;
 
 def var_list():
@@ -1032,3 +1044,56 @@ def check_pattern(a,b):
             if a[j] != b[j]:
                 return False
     return True
+    
+    
+def decal_break(line):
+    """
+    break down declaration lines
+    """
+    nl=len(line)
+    j0=0
+    lb0=0
+    vsl=[]
+    slist=[]
+    for jj in range(nl):
+        if line[jj]=='(' and is_letternumc(line[jj]):
+            lb0=lb0+1
+        elif line[jj] ==')':
+            lb0=lb0-1
+        elif line[jj] ==',':
+            if lb0==0:
+                s=line[j0:jj]
+                j0=jj+1
+                vsl.append(s)
+    vsl.append(line[j0:])            
+#    print(vsl)    
+    for s in vsl:
+        vsl_lhs,vsl1=var_break(s)
+
+        for ss in vsl1:
+            if ss not in slist:
+                slist.append(ss)
+    return slist
+            
+
+def get_procedure_name(line):
+    """
+    get name of the subroutine or function
+    """
+    x=line.split(' ')
+    
+    ss=x[1].strip()
+    
+    nl=len(ss)
+    name=''
+    for jj in range(nl):
+        if ss[jj] =='(':
+            name=ss[0:jj]
+            break
+    if not name:
+        name=ss
+    return x[0],name          
+        
+    
+        
+        
