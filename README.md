@@ -1,20 +1,46 @@
 # fortran_python_tools
 
-Type the following command 
+Tools include
 
-python varAnalyzer.py --help
+labelifs.py
 
-for how to use varAnalyzer.py to analyze the variable usage of a given f77 file.
+labels all IF structures.
 
-One example output is 
+varAnalyzer.py
 
-wthr.f.var,
+reports variable use for subroutine files.
 
-which is generated from using 
+varAnalyzerv2.py
 
-python varAnalyzer.py --hlist hfile.ls --ff77 ../EcoSIM/f77src/ecosys_src/wthr.f 
+reports variable use for module files.
 
-hfile.ls contains the list of head files. 
+proceduresplit.py
 
-If this repo is put to the same upper directory like EcoSIM, then not much
-change is needed to make the code work. 
+splits subroutines based on subroutine headers.
+
+insertf77space.py
+
+adds space to conform with f77 format.
+
+
+
+hfile.ls contains the list of head files needed by varAnalyzer.py
+and varAnalyzerv2.py. It should be updated accordingly.
+
+type
+
+python script_name.py --help
+
+for information.
+
+
+To use varAnalyzerv2.py, some modifications of the module file is needed.
+An example can be found at
+
+https://github.com/jinyun1tang/EcoSIM/blob/jytang/modular/f77src/ecosys_mods/GrosubMod.f
+
+where 'C     include_section', 'C     end_include_section', and 'C     begin_execution'
+are added to help identify the proper blocks.
+
+proceduresplit.py carves out subroutines by paired labels like 'C      subroutine subname' and
+'C      end subroutine subname' 
