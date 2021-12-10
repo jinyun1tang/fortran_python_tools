@@ -3,7 +3,8 @@ import numpy as np
 import argparse
 import sys
 from shutil import copyfile
-
+import varlibs as vl
+import subprocess
 #
 # globals
 
@@ -33,14 +34,21 @@ args = parser.parse_args()
 
 f77f=args.fold[0]
 
-copyfile(f77f, f77f+".bak")
+fnm=vl.get_file_name(f77f)
+subprocess.run(["mkdir -p work"])
+
+fbak='./work/'+fnm+".bak"
+
+copyfile(f77f, fbak)
 
 f77lb=f77f+'.lbif'
 
 labels=np.zeros((30),dtype=np.int16)
 curpos=0
 
-flbl=open(f77f+".lbif","w")
+flb='./work/'+fnm+".lbif"
+
+flbl=open(flb,"w")
 lelif=False
 with open(f77f,"r") as foldf:
     line = foldf.readline()

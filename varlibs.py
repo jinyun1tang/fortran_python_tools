@@ -37,7 +37,7 @@ def is_special(tline):
     if 'CALL ' in tline[0:5]:
         return True
     if 'CHARACTER' in tline:
-        return True        
+        return True
     if 'CONTAINS' in tline:
         return True
     if 'CONTINUE' in tline:
@@ -45,7 +45,7 @@ def is_special(tline):
     if 'DATA' in tline[0:4]:
         return True
     if 'DIMENSION' in tline:
-        return True        
+        return True
     if 'ENDIF' in tline:
         return True
     if 'END ' in tline[0:5]:
@@ -57,11 +57,11 @@ def is_special(tline):
     if 'FUNCTION' in tline:
         return True
     if 'GO TO' == tline[0:5]:
-        return True        
+        return True
     if 'LOGICAL' in tline:
-        return True        
+        return True
     if 'include' in tline:
-        return True        
+        return True
     if 'INTEGER' in tline:
         return True
     if 'PARAMETER' in tline:
@@ -69,23 +69,23 @@ def is_special(tline):
     if 'PAUSE' in tline:
         return True
     if 'PRIVATE' == tline[0:7]:
-        return True            
+        return True
     if 'PRINT' in tline:
         return True
     if 'PROGRAM' in tline:
         return True
     if 'PUBLIC' == tline[0:6]:
-        return True            
+        return True
     if 'READ' in tline:
         return True
     if 'REAL*' in tline:
-        return True        
+        return True
     if 'RETURN' in tline:
-        return True        
+        return True
     if 'STOP' in tline:
         return True
     if 'SUBROUTINE' in tline:
-        return True        
+        return True
     if 'WRITE' in tline:
         return True
     if '::' in tline:
@@ -1044,8 +1044,8 @@ def check_pattern(a,b):
             if a[j] != b[j]:
                 return False
     return True
-    
-    
+
+
 def decal_break(line):
     """
     break down declaration lines
@@ -1065,8 +1065,8 @@ def decal_break(line):
                 s=line[j0:jj]
                 j0=jj+1
                 vsl.append(s)
-    vsl.append(line[j0:])            
-#    print(vsl)    
+    vsl.append(line[j0:])
+#    print(vsl)
     for s in vsl:
         vsl_lhs,vsl1=var_break(s)
 
@@ -1074,16 +1074,16 @@ def decal_break(line):
             if ss not in slist:
                 slist.append(ss)
     return slist
-            
+
 
 def get_procedure_name(line):
     """
     get name of the subroutine or function
     """
     x=line.split(' ')
-    
+
     ss=x[1].strip()
-    
+
     nl=len(ss)
     name=''
     for jj in range(nl):
@@ -1092,8 +1092,29 @@ def get_procedure_name(line):
             break
     if not name:
         name=ss
-    return x[0],name          
-        
-    
-        
-        
+    return x[0],name
+
+
+def get_file_path(file_long):
+    """
+    get file path of file_long
+    """
+    nl=len(file_long)
+    kk=0
+    for jj in range(nl):
+        if file_long[nl-1-jj]=='/':
+            kk=nl-jj
+            break
+    return file_long[0:kk]
+
+def get_file_name(file_long):
+    """
+    get file path of file_long
+    """
+    nl=len(file_long)
+    kk=0
+    for jj in range(nl):
+        if file_long[nl-1-jj]=='/':
+            kk=nl-jj
+            break
+    return file_long[kk:]

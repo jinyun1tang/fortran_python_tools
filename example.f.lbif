@@ -1,0 +1,27 @@
+       program main
+
+C this is an example f77 file
+C
+
+      if (xxx)then :IL100b
+      if(xxx) then :IL110b
+      if (xx)call sth
+
+      if(xx  .and. xx
+     2xlkdgag
+     3xlklgg)then :IL120b
+      endif :IL120e
+      if (xbg)then :IL120b
+      else
+      endif :IL120e
+
+      if a then :IL120b
+      elseif b
+     2then
+      elseif c then
+      ELSEIF(IDAY(7,NB,NZ,NY,NX).EQ.0)THEN
+
+      endif :IL120e
+      endif :IL110e
+      endif :IL100e
+      end program main

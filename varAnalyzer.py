@@ -4,6 +4,7 @@ import sys
 from shutil import copyfile
 import varlibs as vl
 import hreader as hrd
+import subprocess
 
 """
 Currently, the analyzer does not work well with logical and character variables,
@@ -45,6 +46,7 @@ hlist=args.hlist[0]
 
 #create the list of head files to be loaded
 hlfs=[]
+subprocess.run(["mkdir -p work"])
 
 with open(hlist,"r") as foldf:
     line = foldf.readline()
