@@ -35,7 +35,7 @@ args = parser.parse_args()
 f77f=args.fold[0]
 
 fnm=vl.get_file_name(f77f)
-subprocess.run(["mkdir -p work"])
+subprocess.run(["mkdir", "-p","work"])
 
 fbak='./work/'+fnm+".bak"
 

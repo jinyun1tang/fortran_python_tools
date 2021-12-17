@@ -19,7 +19,7 @@ f77f=args.fold[0]
 
 forb=args.operation[0]
 
-subprocess.run(["mkdir -p work"])
+subprocess.run(["mkdir", "-p","work"])
 
 fnm=vl.get_file_name(f77f)
 fbak='./work/'+fnm+".bak"
@@ -42,6 +42,7 @@ if forb.upper() == 'F':
             if "C      subroutine"==line[0:17]:
                 subf.append(line[1:])
                 fwr.write('      call'+line[17:].rstrip()+'\n')
+#                print('      call'+line[17:].rstrip()+'\n')
                 stage=1
             else:
                 if 'C      end subroutine' ==line[0:21]:
@@ -49,14 +50,19 @@ if forb.upper() == 'F':
                     subf.append(line[1:])
                 elif 'end module ' in line.lower():
                     fwr.write('C'+'-'*90+'\n')
+#                    print('C'+'-'*90+'\n')
                     for ss in subf:
                         fwr.write(ss.rstrip()+'\n')
+#                        print(ss.rstrip())
                     fwr.write(line.rstrip()+'\n')
+#                    print(line)
                 else:
+#                    print('stage=%d'%stage)
                     if stage>0:
-                        subf.append(line)
+                        subf.append(line.rstrip())
                     else:
                         fwr.write(line.rstrip()+'\n')
+#                        print(line.rstrip())
 
             line = foldf.readline()
     fwr.close()
