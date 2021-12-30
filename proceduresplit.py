@@ -49,11 +49,12 @@ if forb.upper() == 'F':
                     stage=0
                     subf.append(line[1:])
                 elif 'end module ' in line.lower():
-                    fwr.write('C'+'-'*90+'\n')
+                    fwr.write('C'+'-'*90+'\n\n')
 #                    print('C'+'-'*90+'\n')
                     for ss in subf:
                         fwr.write(ss.rstrip()+'\n')
 #                        print(ss.rstrip())
+                    fwr.write('\n')
                     fwr.write(line.rstrip()+'\n')
 #                    print(line)
                 else:

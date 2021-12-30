@@ -76,4 +76,4 @@ with open(f77f,"r") as foldf:
         line = foldf.readline()
 
 flbl.close()
-print("please check file %s"%(f77f+".lbif"))
+print("please check file %s"%flb)
